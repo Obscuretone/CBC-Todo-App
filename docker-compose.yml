@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # Backend Service (Sanic... gotta go fast.)
+  backend:
+    build:
+      context: ./backend
+    env_file: ./backend/.env
+    ports:
+      - "8081:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - database
+      - redis
+    networks:
+      - cbc-todo-app
+
+  # Frontend Service (Vue.js)
+  frontend:
+    build:
+      context: ./frontend # Adjust the context to the frontend directory
+      dockerfile: Dockerfile # This is the Dockerfile inside the frontend directory
+    env_file:
+      - ./frontend/.env # Add this line to use the .env file
+    ports:
+      - "5173:80" # Expose port 5173 on your local machine, but Nginx uses 80
+      - "3000:3000"
+    volumes:
+      - ./frontend/src:/app/src # Bind mount the src folder (live-reload enabled
+    depends_on:
+      - backend
+
+    networks:
+      - cbc-todo-app
+    # command: /bin/sh -c "while true; do sleep 3600; done" # Keeps the container running for 1 hour
+    command: npm start # Run the React dev server for live-reload
+
+  database:
+    build:
+      context: ./database
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=cbc_todo
+      - MYSQL_USER=todo_user
+      - MYSQL_PASSWORD=todo_pass
+    networks:
+      - cbc-todo-app
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6380:6379"
+    networks:
+      - cbc-todo-app
+
+# Define the network
+networks:
+  cbc-todo-app:
+    driver: bridge # Default Docker network driver

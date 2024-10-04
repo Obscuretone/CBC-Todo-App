@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Node.js
+node_modules/
+
+# Docker
+*.log
+*.env
+
+# IDE files
+
+.idea/
+
+.DS_Store

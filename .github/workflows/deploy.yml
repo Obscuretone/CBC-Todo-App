@@ -1,0 +1,66 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Adjust this to your default branch name
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Login to Azure
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Step 3: Build and Push Docker Images
+      - name: Build and Push Docker Images
+        run: |
+          # Login to Azure Container Registry
+          az acr login --name cbctodoappregistry
+          
+          # Build and push the backend image
+          docker build -t cbctodoappregistry.azurecr.io/backend:latest -f ./backend/Dockerfile ./backend
+          docker push cbctodoappregistry.azurecr.io/backend:latest
+
+          # Build and push the frontend image
+          docker build -t cbctodoappregistry.azurecr.io/frontend:latest -f ./frontend/Dockerfile ./frontend
+          docker push cbctodoappregistry.azurecr.io/frontend:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build  # Ensure this job runs after the build job
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 1: Login to Azure
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+
+      - name: Check directory contents
+        run: ls -al ${{ github.workspace }}
+
+
+      # Step 2: Configure Azure Web App for Docker
+      - name: Configure Azure Web App for Docker
+        run: |
+          az webapp config container set \
+            --name CbcTodoApp \
+            --resource-group CbcTodoApp \
+            --multicontainer-config-type compose \
+            --multicontainer-config-file ./docker-compose-deploy.yml
+
+      # You don't need to set the environment variables here since they are already set in Azure Web App

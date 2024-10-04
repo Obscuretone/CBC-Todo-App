@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Radio+Canada:wght@400;700&display=swap');
+
+
+body {
+  margin: 0;
+  font-family: 'Radio Canada', sans-serif;
+
+  /* Apply the font globally */
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+#routes {
+  margin: 0px 20px;
+
+}
+
+#cbc_gem {
+  animation: App-logo-spin 1s linear;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(270deg);
+  }
+}

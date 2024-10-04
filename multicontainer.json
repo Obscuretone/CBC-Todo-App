@@ -1,0 +1,8 @@
+{
+    "containerType": "compose",
+    "file": "docker-compose.yml",
+    "config": {
+        "image": "cbctodoappregistry.azurecr.io/backend:latest",
+        "image": "cbctodoappregistry.azurecr.io/frontend:latest"
+    }
+}

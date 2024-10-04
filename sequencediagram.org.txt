@@ -1,0 +1,128 @@
+title CBC Todo App
+
+actor "User" as user
+participant "React" as frontend
+participant "API Gateway / LB" as API
+participant "Azure Functions" as azurefunctions
+database "Azure Queue Storage" as q
+participant "Sanic Container" as backend
+database "Azure Cache for Redis" as cache
+database "Azure Database for MariaDB" as db
+participant "Azure Signalr" as ws
+database "Azure Active Directory" as aad
+participant "Azure Translator" as translator
+
+group #teal Tasks #white
+  autoactivation on
+
+  user->frontend: Create/Delete Task
+
+  group #ddd Azure Functions POST, DELETE /tasks #white
+    frontend->API:POST, DELETE /tasks
+    API->azurefunctions: Run Azure Fn
+    azurefunctions->q: Add Task to Queue
+    q-->azurefunctions: 
+    azurefunctions-->API:
+    API-->frontend: Response (200, 202, 400, 403)
+  end
+  
+    group #ddd API POST, DELETE /tasks #white
+    frontend->API:POST, DELETE /tasks
+    API->backend: Run Azure Fn
+    backend-->API:
+    API-->frontend: Response (200, 202, 400, 403)
+  end
+  
+  
+  group #ddd q tasks #white
+  backend->q: get queued task
+  q-->backend:
+    backend->db: Add Task to DB
+    db-->backend: 
+    backend->cache:Cache Invalidation (Tasks with tag)
+    cache-->backend: Done
+    
+    backend->ws: Notify (Task Created)
+
+    
+  end
+  
+  group #ddd Push Notification #white
+    ws-->frontend: Notify (Task Created)
+  end
+    frontend-->user: Task Is Created
+
+
+  user->frontend: Read Tasks
+  group #ddd GET /tasks/:id #white
+    frontend->API: GET /tasks/:id 
+    API->backend: GET /tasks/:id
+    backend->cache: Check JWT
+    cache-->backend: Valid or None
+    
+    backend->cache: Get Results (If Any)
+    cache-->backend: Tasks or None
+
+    alt #grey If No Cached Tasks
+      backend->db: Get Tasks from DB
+      db-->backend:Tasks
+      
+      alt #lightgrey If i18n, and translation doesn't exist in db
+      backend->translator: Get a translation to the user language
+      translator-->backend: Translated Text
+      end
+      
+      backend->cache: Cache Results (If Any)
+      cache-->backend: Done
+      
+    end
+    
+    
+    
+    backend-->API:Tasks or None
+
+    API-->frontend: Response (200, 400, 403, 404)
+
+  end
+  
+  frontend-->user:Tasks
+end
+
+
+group #green Auth #white
+
+  user->frontend: Login Page
+  group #ddd POST /auth #white
+  
+    frontend->aad: Get MS Token
+    aad-->frontend: Response
+    frontend->API: POST /auth
+    API->backend: POST /auth
+   
+    
+    alt #grey If User Login Successful
+      backend->cache: Store JWT
+      cache-->backend:
+      backend-->API: 200
+      activate backend
+    else Else
+      backend-->API: 403
+    end
+    backend-->backend:Guarantee 3 second response with non halting delay
+    API-->frontend: App JWT or None
+  end
+  frontend-->user: Success or Not
+
+  user->frontend: Logout Button
+  group #ddd DELETE /auth #white
+  frontend->API: DELETE /auth
+  API->backend: DELETE /auth
+  backend->cache: Invalidate JWT and Cache using tag
+  cache-->backend:
+
+  backend-->API:
+  API-->frontend: 200
+
+  end
+  frontend-->user: Redirect to /login
+end
