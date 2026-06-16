@@ -1,0 +1,17 @@
+services:
+  backend:
+    image: cbctodoappregistry.azurecr.io/backend:latest
+    environment:
+      CORS_ORIGIN: ${BACKEND_CORS_ORIGIN}
+      DATABASE_URL: ${BACKEND_DATABASE_URL}
+      REDIS_URI: ${BACKEND_REDIS_URI}
+      SANIC_AUTO_RELOAD: ${BACKEND_SANIC_AUTO_RELOAD}
+      SANIC_DEBUG: ${BACKEND_SANIC_DEBUG}
+      SECRET_KEY: ${BACKEND_SECRET_KEY}
+
+  frontend:
+    image: cbctodoappregistry.azurecr.io/frontend:latest
+    environment:
+      REACT_APP_API_URL: ${FRONTEND_REACT_APP_API_URL}
+      REACT_APP_AUTHORITY: ${FRONTEND_REACT_APP_AUTHORITY}
+      REACT_APP_CLIENT_ID: ${FRONTEND_REACT_APP_CLIENT_ID}

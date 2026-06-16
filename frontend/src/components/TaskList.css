@@ -1,0 +1,60 @@
+.task-item {
+    list-style-type: none;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.tasks {
+    margin: 0;
+    padding: 0
+}
+
+button {
+    background-color: red;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 2px;
+    font-family: 'Radio Canada', sans-serif;
+}
+
+.new-task {}
+
+.new-task input {
+    margin: 5px 0;
+    padding: 10px;
+    font-family: 'Radio Canada', sans-serif;
+}
+
+.new-task textarea {
+    margin: 5px 0;
+    padding: 10px;
+    font-family: 'Radio Canada', sans-serif;
+    width: 50%;
+    display: block
+}
+
+.task-item {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px 0;
+    transition: 'opacity 1s ease';
+}
+
+.task-item button {
+    background-color: #777;
+}
+
+.task-status,
+.task-created {
+    color: #777;
+    font-size: 0.7em;
+}
+
+#refresh {
+    color: red;
+    background: rgba(255, 255, 255, 0);
+
+}
