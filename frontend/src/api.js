@@ -1,21 +1,13 @@
-// src/api.js
 import axios from 'axios';
 
-// Get the base URL from the environment variable
-const apiUrl = process.env.REACT_APP_API_URL;
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
-// Function to login user using Azure AD token
-export const loginUser = async (token) => {
-    console.log("loginUser" + `${apiUrl}/auth/`)
-    try {
-        const response = await axios.post(`${apiUrl}/auth/`, {}, {
-            headers: {
-                Authorization: `Bearer ${token}`, // Send the token as a bearer token
-            },
-        });
-        return response.data; // Return the response data
-    } catch (error) {
-        console.error("Login failed:", error);
-        throw error;
-    }
+export const loginUser = async (email, password) => {
+    const response = await axios.post(`${apiUrl}/auth`, { email, password });
+    return response.data;
+};
+
+export const registerUser = async (username, email, password) => {
+    const response = await axios.post(`${apiUrl}/auth/register`, { username, email, password });
+    return response.data;
 };

@@ -3,7 +3,6 @@ from sanic_openapi import doc
 from uuid import UUID
 from services.task_service import TaskService
 from models.User import User
-from sanic.exceptions import SanicException
 from sanic.request import Request
 from sanic.response import HTTPResponse
 from typing import List, Dict, Optional
@@ -35,7 +34,7 @@ class TaskController:
         """
         Create a new task for the authenticated user.
         """
-        data = request.json
+        data = request.json or {}
         title = data.get("title")
         description = data.get("description")
         user_uuid = request.ctx.user_uuid  # Assuming user is authenticated
@@ -54,6 +53,7 @@ class TaskController:
             "title": task.title,
             "description": task.description,
             "user_id": str(user.uuid),
+            "status": task.status,
             "created_at": task.created_at.isoformat(),
         }
 
@@ -102,6 +102,7 @@ class TaskController:
                 "title": task.title,
                 "description": task.description,
                 "user_id": str(user.uuid),
+                "status": task.status,
                 "created_at": task.created_at.isoformat(),
             }
             for task in tasks

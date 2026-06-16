@@ -2,19 +2,22 @@ services:
   backend:
     build:
       context: ./backend
-    env_file:
-      - ./backend/.env
     environment:
       DATABASE_URL: mysql://todo_user:todo_pass@database:3306/cbc_todo
       REDIS_URI: redis://redis:6379/0
-      CORS_ORIGIN: http://localhost:3000
+      SECRET_KEY: local-dev-secret
+      CORS_ORIGIN: http://localhost:${FRONTEND_PORT:-3000}
+      SANIC_DEBUG: "True"
+      SANIC_AUTO_RELOAD: "True"
     ports:
       - "8000:8000"
     volumes:
       - ./backend:/app
     depends_on:
-      - database
-      - redis
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - cbc-todo-app
 
@@ -22,10 +25,11 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    env_file:
-      - ./frontend/.env
+    environment:
+      VITE_API_URL: http://localhost:8000
+      CHOKIDAR_USEPOLLING: "true"
     ports:
-      - "3000:3000"
+      - "${FRONTEND_PORT:-3000}:3000"
     volumes:
       - ./frontend/src:/app/src
     networks:
@@ -42,6 +46,11 @@ services:
       - MYSQL_DATABASE=cbc_todo
       - MYSQL_USER=todo_user
       - MYSQL_PASSWORD=todo_pass
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
     networks:
       - cbc-todo-app
 

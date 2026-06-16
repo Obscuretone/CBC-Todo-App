@@ -20,6 +20,7 @@ venv/
 # Node
 node_modules/
 frontend/build/
+frontend/dist/
 frontend/coverage/
 npm-debug.log*
 yarn-debug.log*

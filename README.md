@@ -1,26 +1,18 @@
 # CBC Todo App
 
-CBC Todo App is an experimental enterprise-style task manager. It combines a React frontend, a Sanic API, MariaDB storage, Redis cache plumbing, Azure AD sign-in experiments, and architecture notes for a larger Azure deployment.
+CBC Todo App is an experimental full-stack task manager. It combines a React frontend, a Sanic API, MariaDB persistence, Redis-ready configuration, JWT authentication, and architecture notes for a larger cloud deployment.
 
 ## Repository Layout
 
-- `frontend/` - React app created with Create React App.
+- `frontend/` - React app built with Vite.
 - `backend/` - Sanic API using Tortoise ORM and JWT auth.
-- `database/` - MariaDB Docker image seed/init SQL.
+- `database/` - MariaDB Docker image init hook.
 - `swagger/` - OpenAPI draft.
-- `docs/architecture/` - original CBC requirements, Draw.io diagrams, and sequence notes.
-- `.github/workflows/` - Azure container build/deploy workflow draft.
+- `docs/architecture/` - original CBC requirements, Draw.io diagrams, sequence notes, and archived Azure deployment drafts.
 
 ## Local Setup
 
-Copy the environment templates:
-
-```bash
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env
-```
-
-Start the stack:
+Start the full stack:
 
 ```bash
 docker compose up --build
@@ -33,6 +25,34 @@ Default local URLs:
 - MariaDB: `127.0.0.1:3307`
 - Redis: `127.0.0.1:6380`
 
-## Current State
+The UI lets you create an account, log in, create tasks, list tasks, and complete tasks. The backend stores users and tasks in MariaDB.
 
-The app currently supports the basic skeleton for auth and task CRUD, but auth is not fully reconciled: the frontend uses Azure/MSAL while the backend currently expects app-issued JWTs. Treat this repo as a prototype plus architecture archive, not production-ready software.
+If port 3000 is already in use, start the frontend on another host port:
+
+```bash
+FRONTEND_PORT=3002 docker compose up --build
+```
+
+## Direct Backend Setup
+
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+python app/app.py
+```
+
+## API Endpoints
+
+- `GET /`
+- `POST /auth/register`
+- `POST /auth`
+- `GET /tasks`
+- `POST /tasks`
+- `DELETE /tasks/<task_id>`
+
+## Notes
+
+The app is intentionally small, but it should be runnable from a fresh clone. The architecture folder preserves the larger cloud design ideas separately from the working local implementation.

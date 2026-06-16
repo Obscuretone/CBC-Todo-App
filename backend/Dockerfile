@@ -1,19 +1,15 @@
-# Backend Dockerfile example
+FROM python:3.12-slim
 
-# Use a Python base image
-FROM python:3.9-slim
-
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the backend application code to the container
-COPY . /app
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Install dependencies (assuming you have requirements.txt)
-RUN pip install -r requirements.txt
+COPY requirements.txt .
+RUN python -m pip install --no-cache-dir -r requirements.txt
 
-# Expose the port the app runs on
+COPY . .
+
 EXPOSE 8000
 
-# Run the backend application
 CMD ["python", "app/app.py"]

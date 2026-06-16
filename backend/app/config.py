@@ -7,7 +7,6 @@ load_dotenv()
 class Config:
     # Base settings
     SECRET_KEY = os.getenv("SECRET_KEY", "default_secret_key")
-    ENTRA_ID_TENANT_ID = os.getenv("ENTRA_ID_TENANT_ID", "default_tenant_id")
 
     # Database configuration
     DATABASE_URL = os.getenv(

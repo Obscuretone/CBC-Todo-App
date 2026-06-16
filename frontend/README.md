@@ -7,7 +7,6 @@ React frontend for the CBC Todo prototype.
 From the repository root:
 
 ```bash
-cp frontend/.env.example frontend/.env
 docker compose up --build frontend
 ```
 
@@ -20,8 +19,4 @@ cp .env.example .env
 npm start
 ```
 
-The app listens on `http://localhost:3000`.
-
-## Notes
-
-This frontend currently uses Azure/MSAL for login. The backend auth flow still expects app-issued JWTs, so auth needs a follow-up pass before the app is fully usable end to end.
+The app listens on `http://localhost:3000` and expects the API at `VITE_API_URL`, defaulting to `http://localhost:8000`.

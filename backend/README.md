@@ -7,7 +7,6 @@ Sanic API for the CBC Todo prototype. It currently contains email/password JWT a
 From the repository root:
 
 ```bash
-cp backend/.env.example backend/.env
 docker compose up --build backend database redis
 ```
 

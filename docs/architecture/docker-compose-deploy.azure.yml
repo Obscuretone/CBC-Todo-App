@@ -12,6 +12,4 @@ services:
   frontend:
     image: cbctodoappregistry.azurecr.io/frontend:latest
     environment:
-      REACT_APP_API_URL: ${FRONTEND_REACT_APP_API_URL}
-      REACT_APP_AUTHORITY: ${FRONTEND_REACT_APP_AUTHORITY}
-      REACT_APP_CLIENT_ID: ${FRONTEND_REACT_APP_CLIENT_ID}
+      VITE_API_URL: ${FRONTEND_VITE_API_URL}

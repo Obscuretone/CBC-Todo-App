@@ -17,7 +17,7 @@ class UserController:
         self.app.add_route(self.authenticate_user, "/auth", methods=["POST"])
 
     async def create_user(self, request):
-        data = request.json
+        data = request.json or {}
         username = data.get("username")
         email = data.get("email")
         password = data.get("password")
@@ -41,7 +41,7 @@ class UserController:
             return json({"error": str(e)}, status=e.status_code)
 
     async def authenticate_user(self, request):
-        data = request.json
+        data = request.json or {}
         email = data.get("email")
         password = data.get("password")
 
