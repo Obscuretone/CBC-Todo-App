@@ -2,8 +2,6 @@
 
 CBC Todo App is an experimental enterprise-style task manager. It combines a React frontend, a Sanic API, MariaDB storage, Redis cache plumbing, Azure AD sign-in experiments, and architecture notes for a larger Azure deployment.
 
-This is separate from Dive. Dive is the current AI task-splitting todo app; CBC is the older Azure-heavy prototype and design archive.
-
 ## Repository Layout
 
 - `frontend/` - React app created with Create React App.
