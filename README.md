@@ -56,3 +56,22 @@ python app/app.py
 ## Notes
 
 The app is intentionally small, but it should be runnable from a fresh clone. The architecture folder preserves the larger cloud design ideas separately from the working local implementation.
+
+## Continuous integration
+
+CI builds the frontend from its lockfile, checks backend dependency compatibility,
+and tests authentication, task CRUD, and cross-user isolation over the real HTTP
+API with a temporary MariaDB service. It also validates the local Compose config.
+It does not deploy to Azure or require cloud credentials; the old deployment
+workflow remains an archived design draft under `docs/architecture/`.
+
+Run the API integration tests locally with an isolated in-memory SQLite database:
+
+```bash
+python -m pip install -r backend/requirements.txt
+python -m unittest discover -s backend/tests -v
+```
+
+Set `TEST_DATABASE_URL` only to a disposable test database to exercise MariaDB
+locally. The tests create users and tasks; they do not use the app's normal
+`DATABASE_URL`.
