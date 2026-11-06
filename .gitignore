@@ -28,3 +28,10 @@ yarn-error.log*
 
 # Runtime logs
 *.log
+
+# Local files and installed dependencies
+.env.*
+!.env.sample
+!.env.template
+.nira/*.db
+.nira/*.db-*
